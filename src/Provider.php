@@ -12,7 +12,9 @@ class Provider extends AbstractProvider implements ProviderInterface
      */
     protected function getAuthUrl($state)
     {
-        return $this->buildAuthUrlFromBase('https://app.asana.com/-/oauth_authorize', $state);
+        return $this->buildAuthUrlFromBase(
+            'https://app.asana.com/-/oauth_authorize', $state
+        );
     }
 
     /**
@@ -28,13 +30,14 @@ class Provider extends AbstractProvider implements ProviderInterface
      */
     protected function getUserByToken($token)
     {
-        $response = $this->getHttpClient()->get('https://app.asana.com/api/1.0/users/me', [
+        $response = $this->getHttpClient()->get(
+            'https://app.asana.com/api/1.0/users/me', [
             'headers' => [
                 'Authorization' => 'Bearer '.$token,
             ],
         ]);
 
-        return json_decode($response->getBody(), true);
+        return json_decode($response->getBody(), true)['data'];
     }
 
     /**
@@ -43,11 +46,8 @@ class Provider extends AbstractProvider implements ProviderInterface
     protected function mapUserToObject(array $user)
     {
         return (new User())->setRaw($user)->map([
-            'id'       => $user['data']['id'],
-            'nickname' => null,
-            'name'     => $user['data']['name'],
-            'email'    => $user['data']['email'],
-            'avatar'   => $user['data']['photo'],
+            'id' => $user['id'], 'nickname' => null, 'name' => $user['name'],
+            'email' => $user['email'], 'avatar' => $user['photo'],
         ]);
     }
 
@@ -56,6 +56,8 @@ class Provider extends AbstractProvider implements ProviderInterface
      */
     protected function getTokenFields($code)
     {
-        return array_merge(parent::getTokenFields($code), ['grant_type' => 'authorization_code']);
+        return array_merge(parent::getTokenFields($code), [
+            'grant_type' => 'authorization_code',
+        ]);
     }
 }
