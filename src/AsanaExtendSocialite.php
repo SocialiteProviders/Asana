@@ -1,4 +1,5 @@
 <?php
+
 namespace SocialiteProviders\Asana;
 
 use SocialiteProviders\Manager\SocialiteWasCalled;
